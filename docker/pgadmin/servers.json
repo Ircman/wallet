@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Local Wallet DB",
+      "Group": "Wallet Development",
+      "Port": 5432,
+      "Username": "wallet_db_user",
+      "Host": "postgres",
+      "SSLMode": "disable",
+      "MaintenanceDB": "postgres"
+    }
+  }
+}
