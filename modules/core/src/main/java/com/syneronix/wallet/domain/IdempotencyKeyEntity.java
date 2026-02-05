@@ -6,11 +6,13 @@ import com.syneronix.wallet.common.RequestType;
 import com.syneronix.wallet.common.TransactionStatus;
 import com.syneronix.wallet.hibernate.base.BaseEntity;
 import com.syneronix.wallet.hibernate.base.EntitySchema;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.util.UUID;
 
@@ -57,12 +59,14 @@ public class IdempotencyKeyEntity extends BaseEntity {
     @Column(nullable = false)
     private int httpStatusCode = -1;
 
+    @Type(JsonType.class)
     @Column(columnDefinition = "jsonb", nullable = false , updatable = false)
     private String requestBody;
 
     @Column(length = 64)
     private String requestHash;
 
+    @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
     private String responseBody;
 
