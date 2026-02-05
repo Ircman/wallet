@@ -1,0 +1,65 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+  servlet:
+    context-path: /
+
+logging:
+  pattern:
+    console: '%d{HH:mm:ss} %-5p %C{1}.%M\(%line\) - %msg%n'
+  level:
+    root: ERROR
+    com.syneronix: DEBUG
+
+spring:
+  main:
+    lazy-initialization: true
+  application:
+    name: springboot iTest
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wallet_db_test
+    username: wallet_db_user
+    password: wallet_db_password
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 3
+  sql:
+    init:
+      platform: postgres
+      continue-on-error: false
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        hbm2ddl:
+          create_namespaces: true
+        jdbc:
+          time_zone: UTC
+          batch_size: 30
+          batch_versioned_data: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        order_inserts: true
+        order_updates: true
+        show_sql: false
+        use_sql_comments: false
+        format_sql: true
+        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        types.jackson.object.mapper: com.syneronix.wallet.spring.CustomObjectMapperSupplier
+        integration:
+          envers:
+            enabled: false
+  flyway:
+    enabled: true
+
+syneronix:
+  flyway:
+    locations: classpath:db/migration
+    flyway-environment: ${environment:local}
