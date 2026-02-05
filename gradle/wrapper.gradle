@@ -1,0 +1,11 @@
+wrapper {
+    gradleVersion = "8.3"
+
+    def jvmOpts = "-Xms512m -Xmx2048m -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none"
+    inputs.property("jvmOpts", jvmOpts)
+    doLast {
+        def optsEnvVar = "DEFAULT_JVM_OPTS"
+        scriptFile.write scriptFile.text.replace("$optsEnvVar=\"\"", "$optsEnvVar=\"$jvmOpts\"")
+        batchScript.write batchScript.text.replace("set $optsEnvVar=", "set $optsEnvVar=$jvmOpts")
+    }
+}

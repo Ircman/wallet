@@ -1,0 +1,16 @@
+apply from: "${rootDir}/gradle/java.gradle"
+apply from: "${rootDir}/gradle/spring-boot.gradle"
+apply from: "${rootDir}/gradle/itest.gradle"
+
+dependencies {
+    api libs.springBootWeb
+    implementation libs.openApi
+
+    itestImplementation libs.restAssured
+
+    implementation project(':modules:api')
+    implementation project(':modules:services')
+    implementation project(':modules:core')
+
+    itestImplementation project(":modules:shared:testing")
+}

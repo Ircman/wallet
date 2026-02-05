@@ -1,0 +1,17 @@
+apply plugin: "java-test-fixtures"
+
+configurations {
+    testFixturesCompileOnly.extendsFrom testCompileOnly
+    testFixturesAnnotationProcessor.extendsFrom testAnnotationProcessor
+}
+
+sourceSets {
+    itest {
+        compileClasspath += sourceSets.main.output + configurations.testFixturesRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+dependencies {
+    testFixturesImplementation project(":hibernate")
+}

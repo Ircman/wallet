@@ -1,0 +1,18 @@
+apply plugin: "org.unbroken-dome.test-sets"
+
+testSets {
+    itest
+}
+
+dependencies {
+    itestCompileOnly libs.lombok
+    itestAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    systemProperty "spring.profiles.active", System.getProperty("spring.profiles.active")
+    testLogging {
+        showStandardStreams = true
+    }
+}

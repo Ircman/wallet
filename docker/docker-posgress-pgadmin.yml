@@ -11,8 +11,10 @@ services:
       POSTGRES_DB: ${DB_NAME:-wallet_db}
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
-      - postgres_data:/var/lib/postgresql/data
+      - wallet_postgres_data:/var/lib/postgresql/data
     command: ["postgres", "-c", "wal_level=logical"]
+    networks:
+      - wallet-network
 
   pgadmin:
     container_name: wallet-pgadmin
@@ -21,17 +23,23 @@ services:
     ports:
       - "8000:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - wallet_pgadmin_data:/var/lib/pgadmin
       - ./pgadmin/servers.json:/pgadmin4/servers.json
     depends_on:
       - postgres
+    networks:
+      - wallet-network
+
+networks:
+  wallet-network:
+    driver: bridge
 
 volumes:
-  postgres_data:
-    driver: local
-  pgadmin_data:
-    driver: local
+  wallet_postgres_data:
+    name: wallet_postgres_data
+  wallet_pgadmin_data:
+    name: wallet_pgadmin_data

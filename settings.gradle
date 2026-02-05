@@ -1,7 +1,10 @@
-pluginManagement {
-    repositories {
-        maven { url = 'https://repo.spring.io/snapshot' }
-        gradlePluginPortal()
-    }
-}
 rootProject.name = 'wallet'
+
+include ':modules:shared:hibernate'
+include ':modules:shared:spring'
+include ':modules:shared:testing'
+
+include ':modules:core'
+include ':modules:services'
+include ':modules:api'
+include ':modules:app'

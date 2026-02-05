@@ -1,0 +1,96 @@
+ext {
+    findBugsVersion = "3.0.2"
+    hibernateTypesVersion = "2.21.0"
+    restAssuredVersion = "5.2.1"
+    annotationApiVersion = "1.3.2"
+    springDocOpenApi = "2.3.0"
+    commonsIo = "2.13.0"
+    guava = "32.1.2-jre"
+    mapstructVersion = '1.5.5.Final'
+    lombokVersion = '1.18.30'
+}
+
+ext {
+    libs = [
+            jackson                         : [
+                    "com.fasterxml.jackson.core:jackson-core",
+                    "com.fasterxml.jackson.core:jackson-annotations",
+                    "com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations"
+            ],
+            commons                         : [
+                    "org.apache.commons:commons-lang3",
+                    "commons-io:commons-io:${commonsIo}",
+                    "com.google.guava:guava:${guava}"
+            ],
+            lombok                          : [
+                    "org.projectlombok:lombok:${lombokVersion}"
+            ],
+            logging                         : [
+                    "org.slf4j:slf4j-api",
+                    "ch.qos.logback:logback-classic"
+            ],
+            springBoot                      : [
+                    "org.springframework.boot:spring-boot-starter"
+            ],
+            springBootWeb                   : [
+                    "org.springframework.boot:spring-boot-starter-web"
+            ],
+            springBootConfigurationProcessor: [
+                    "org.springframework.boot:spring-boot-configuration-processor"
+            ],
+            hibernate                       : [
+                    "org.springframework.boot:spring-boot-starter-data-jpa",
+                    "org.hibernate.orm:hibernate-envers",
+                    "org.postgresql:postgresql",
+                    "com.vladmihalcea:hibernate-types-60:${hibernateTypesVersion}"
+            ],
+            hibernateValidator              : [
+                    "org.hibernate.validator:hibernate-validator"
+            ],
+            flyway                          : [
+                    "org.flywaydb:flyway-core"
+            ],
+            findbugs                        : [
+                    "com.google.code.findbugs:jsr305:${findBugsVersion}"
+            ],
+            validator                       : [
+                    "jakarta.validation:jakarta.validation-api",
+            ],
+            junit5                          : [
+                    "org.junit.jupiter:junit-jupiter-api",
+                    "org.junit.jupiter:junit-jupiter-params",
+            ],
+            junit5_engine                   : [
+                    "org.junit.jupiter:junit-jupiter-engine"
+            ],
+            test_tools                      : [
+                    "org.mockito:mockito-junit-jupiter"
+            ],
+            springTest                      : [
+                    "org.springframework.boot:spring-boot-starter-test"
+            ],
+            restAssured                     : [
+                    "io.rest-assured:rest-assured:${restAssuredVersion}"
+            ],
+            openApi                         : [
+                    "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocOpenApi}"
+            ],
+            h2                              : [
+                    "com.h2database:h2"
+            ],
+            mapstruct                       : [
+                    "org.mapstruct:mapstruct:${mapstructVersion}",
+                    "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+            ],
+            lombokBindingProcessor          : "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+    ]
+}
+
+allprojects {
+    configurations.configureEach {
+        exclude group: 'org.junit.vintage'
+        exclude group: 'junit'
+        exclude group: 'javax'
+        exclude group: 'commons-fileupload'
+    }
+}

@@ -1,0 +1,72 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+apply plugin: 'java-library'
+apply plugin: 'com.diffplug.spotless'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
+}
+
+task dist {
+    dependsOn 'build'
+}
+
+spotless {
+    java {
+        targetExclude("build/generated/**/*.java")
+
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
+dependencies {
+    implementation libs.commons
+
+    def junitBomVersion = "5.9.1"
+
+    testImplementation enforcedPlatform("org.junit:junit-bom:${junitBomVersion}")
+    testImplementation libs.junit5
+    testImplementation libs.junit5_engine
+    testImplementation libs.test_tools
+    testImplementation libs.springTest
+
+
+    annotationProcessor libs.lombok
+    annotationProcessor libs.springBootConfigurationProcessor
+    compileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+}
+
+
+
+configurations.all {
+    exclude group: 'junit'
+    exclude group: 'org.junit.vintage'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform() {
+        includeEngines 'junit-jupiter'
+        excludeEngines 'junit-vintage'
+    }
+
+    testLogging {
+        events TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.STANDARD_ERROR
+        exceptionFormat TestExceptionFormat.FULL
+        showExceptions true
+        showCauses true
+        showStackTraces true
+    }
+
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: {}.{}", descriptor.className, descriptor.name)
+    }
+}
+
+apply from: "${rootDir}/gradle/dep-management.gradle"

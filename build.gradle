@@ -1,30 +1,63 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.5.11-SNAPSHOT'
-    id 'io.spring.dependency-management' version '1.1.7'
-}
-
-group = 'com.syneronix'
-version = '0.0.1-SNAPSHOT'
-description = 'wallet'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+buildscript {
+    ext {
+        springBootVersion = '3.1.3'
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "org.openapitools:openapi-generator-gradle-plugin:6.4.0"
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE'
+        classpath 'io.swagger.codegen.v3:swagger-codegen-maven-plugin:3.0.41'
+        classpath "org.owasp:dependency-check-gradle:8.2.1"
+        classpath "org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:4.1.0"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:6.22.0"
     }
 }
 
-repositories {
-    mavenCentral()
-    maven { url = 'https://repo.spring.io/snapshot' }
+plugins {
+    id 'base'
+    id 'java'
+    id 'org.springframework.boot' version '3.1.3'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id "org.unbroken-dome.test-sets" version "4.0.0"
+    id "org.openapi.generator" version "6.4.0"
+    id "com.google.cloud.tools.jib" version "3.3.1"
+    id "org.owasp.dependencycheck" version "8.2.1"
+    id "co.uzzu.dotenv.gradle" version "1.2.0"
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+apply from: "${rootDir}/gradle/dependencies.gradle"
+apply from: "${rootDir}/gradle/wrapper.gradle"
+apply plugin: "org.owasp.dependencycheck"
+
+allprojects {
+    group = 'com.syneronix'
+    project.version = rootProject.version
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+defaultTasks "clean", "build", "assemble"
+
+subprojects {
+    task allDependencies(type: DependencyReportTask) {}
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
 }
