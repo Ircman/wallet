@@ -1,0 +1,11 @@
+apply from: "${rootDir}/gradle/java.gradle"
+
+dependencies {
+    implementation libs.springBoot
+    implementation libs.springBootWeb
+    implementation libs.jackson
+    implementation libs.hibernate
+    implementation libs.validator
+    implementation libs.commons
+
+}

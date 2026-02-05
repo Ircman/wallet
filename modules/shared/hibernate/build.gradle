@@ -1,0 +1,16 @@
+apply from: "${rootDir}/gradle/java.gradle"
+apply from: "${rootDir}/gradle/itest.gradle"
+
+dependencies {
+    implementation libs.hibernate
+    implementation libs.springBoot
+    implementation libs.jackson
+
+    implementation libs.lombok
+    annotationProcessor libs.lombok.get(0)
+
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+    itestImplementation libs.h2
+
+}
