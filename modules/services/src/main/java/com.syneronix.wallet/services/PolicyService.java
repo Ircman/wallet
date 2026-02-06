@@ -1,6 +1,5 @@
 package com.syneronix.wallet.services;
 
-import com.syneronix.wallet.api.errors.ConflictException;
 import com.syneronix.wallet.api.errors.RateLimitExceededException;
 import com.syneronix.wallet.api.errors.WalletLockedException;
 import com.syneronix.wallet.config.PolicyProperties;

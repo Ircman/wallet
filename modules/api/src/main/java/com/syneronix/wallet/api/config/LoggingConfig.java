@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.Environment;
 
 import java.util.EnumSet;
 
@@ -17,9 +16,9 @@ import java.util.EnumSet;
 public class LoggingConfig {
 
     @Bean
-    public FilterRegistrationBean<LoggingFilter> loggingFilter(Environment environment) {
+    public FilterRegistrationBean<LoggingFilter> loggingFilter() {
         FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new LoggingFilter(environment));
+        registrationBean.setFilter(new LoggingFilter());
         registrationBean.setDispatcherTypes(EnumSet.allOf(DispatcherType.class));
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registrationBean;

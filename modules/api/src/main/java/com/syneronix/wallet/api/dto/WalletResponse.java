@@ -2,7 +2,6 @@ package com.syneronix.wallet.api.dto;
 
 import com.syneronix.wallet.common.WalletStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

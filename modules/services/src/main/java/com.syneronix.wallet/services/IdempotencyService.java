@@ -1,7 +1,6 @@
 package com.syneronix.wallet.services;
 
-import com.syneronix.wallet.api.errors.PreviousRequestFailedException;
-import com.syneronix.wallet.api.errors.RequestTamperingException;
+
 import com.syneronix.wallet.common.Currency;
 import com.syneronix.wallet.common.RequestType;
 import com.syneronix.wallet.common.TransactionStatus;

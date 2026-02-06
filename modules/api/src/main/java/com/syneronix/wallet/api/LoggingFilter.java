@@ -7,7 +7,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -17,11 +16,6 @@ import java.io.IOException;
 @Slf4j
 public class LoggingFilter extends GenericFilterBean {
 
-    private final Environment environment;
-
-    public LoggingFilter(Environment environment) {
-        this.environment = environment;
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

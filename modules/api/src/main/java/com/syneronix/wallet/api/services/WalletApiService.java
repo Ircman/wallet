@@ -2,13 +2,9 @@ package com.syneronix.wallet.api.services;
 
 import com.syneronix.wallet.api.dto.*;
 import com.syneronix.wallet.api.errors.*;
-import com.syneronix.wallet.common.Currency;
 import com.syneronix.wallet.common.RequestType;
-import com.syneronix.wallet.common.TransactionStatus;
 import com.syneronix.wallet.domain.TransactionEntity;
 import com.syneronix.wallet.domain.WalletEntity;
-import com.syneronix.wallet.mappers.JsonMapper;
-import com.syneronix.wallet.services.IdempotencyService;
 import com.syneronix.wallet.services.PolicyService;
 import com.syneronix.wallet.services.TransactionService;
 import com.syneronix.wallet.services.WalletService;
@@ -30,7 +26,6 @@ public class WalletApiService {
     private final WalletService walletService;
     private final IdempotencyApiService idempotencyApiService;
     private final WalletMapper walletMapper;
-    private final JsonMapper jsonMapper;
     private final TransactionService transactionService;
     private final PolicyService policyService;
 

@@ -1,7 +1,6 @@
 package com.syneronix.wallet.services;
 
 import com.syneronix.wallet.api.errors.ConflictException;
-import com.syneronix.wallet.api.errors.NotFoundException;
 import com.syneronix.wallet.api.errors.WalletNotFoundException;
 import com.syneronix.wallet.common.WalletStatus;
 import com.syneronix.wallet.domain.BlacklistEntity;

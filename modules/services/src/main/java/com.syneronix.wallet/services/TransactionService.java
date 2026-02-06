@@ -1,6 +1,5 @@
 package com.syneronix.wallet.services;
 
-import com.syneronix.wallet.api.errors.ConflictException;
 import com.syneronix.wallet.api.errors.CurrencyMismatchException;
 import com.syneronix.wallet.common.Currency;
 import com.syneronix.wallet.common.MoneyFlowDirection;

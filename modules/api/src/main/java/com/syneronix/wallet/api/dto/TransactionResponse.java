@@ -3,7 +3,6 @@ package com.syneronix.wallet.api.dto;
 import com.syneronix.wallet.common.TransactionStatus;
 import com.syneronix.wallet.common.TransactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
