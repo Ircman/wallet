@@ -48,7 +48,7 @@ public class OpenApiConfig {
         final String validationSchemaName = BadRequestErrorModel.ValidationError.class.getSimpleName();
 
         Schema validationErrorSchema = new ObjectSchema()
-                .name(validationSchemaName) // Имя схемы
+                .name(validationSchemaName)
                 .description("Details of a single field validation error")
                 .addProperty("field", new Schema<String>().type("string").example("username"))
                 .addProperty("message", new Schema<String>().type("string").example("must not be empty"));
@@ -140,16 +140,29 @@ public class OpenApiConfig {
     }
 
     @Bean
-    public GroupedOpenApi publicWebApi(
+    public GroupedOpenApi managementApi(
 
             OpenApiCustomizer globalOpenApiCustomizer
     ) {
         return GroupedOpenApi.builder()
-                .group("private-web")
+                .group("Management")
                 .pathsToMatch(
-                        "/api/v1/me"
+                        "/api/v1/management/**"
                 )
 
+                .addOpenApiCustomizer(globalOpenApiCustomizer)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi walletApi(
+            OpenApiCustomizer globalOpenApiCustomizer
+    ) {
+        return GroupedOpenApi.builder()
+                .group("Wallet")
+                .pathsToMatch(
+                        "/api/v1/wallets/**"
+                )
                 .addOpenApiCustomizer(globalOpenApiCustomizer)
                 .build();
     }

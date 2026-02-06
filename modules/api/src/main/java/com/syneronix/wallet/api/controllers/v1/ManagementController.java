@@ -1,7 +1,7 @@
 package com.syneronix.wallet.api.controllers.v1;
 
-import com.syneronix.wallet.api.dto.BlacklistResponse;
-import com.syneronix.wallet.api.dto.BlockWalletRequest;
+import com.syneronix.wallet.api.dto.management.BlacklistResponse;
+import com.syneronix.wallet.api.dto.management.BlockWalletRequest;
 import com.syneronix.wallet.domain.BlacklistEntity;
 import com.syneronix.wallet.services.BlacklistService;
 import io.swagger.v3.oas.annotations.Operation;

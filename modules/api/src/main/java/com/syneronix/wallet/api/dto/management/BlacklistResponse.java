@@ -1,16 +1,20 @@
-package com.syneronix.wallet.api.dto;
+package com.syneronix.wallet.api.dto.management;
 
+import com.syneronix.wallet.api.dto.AbstractBaseResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.Instant;
 import java.util.UUID;
 
+
 @Data
 @Builder
 @Schema(description = "Details of a blocked wallet")
-public class BlacklistResponse {
+@EqualsAndHashCode(callSuper = true)
+public class BlacklistResponse extends AbstractBaseResponse {
 
     @Schema(description = "ID of the blacklist entry", example = "b1ffcd00-0d1c-5fa9-cc7e-7cc0ce491b22")
     private UUID id;

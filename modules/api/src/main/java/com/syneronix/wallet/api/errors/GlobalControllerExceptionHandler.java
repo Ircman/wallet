@@ -17,16 +17,12 @@ import java.util.List;
 @Slf4j
 public class GlobalControllerExceptionHandler {
 
-    /* ============================================================
-       DOMAIN / API
-       ============================================================ */
-
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequest(
             BadRequestException ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, false);
         return buildResponse(HttpStatus.BAD_REQUEST, ex, request);
     }
 
@@ -35,7 +31,7 @@ public class GlobalControllerExceptionHandler {
             RequestTamperingException ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, true);
         return buildResponse(HttpStatus.valueOf(ex.getStatus()), ex, request);
     }
 
@@ -44,7 +40,7 @@ public class GlobalControllerExceptionHandler {
             PreviousRequestFailedException ex,
             HttpServletRequest request
     ) {
-        log.warn("Returning previous failure: {}", ex.getMessage());
+        logApi(ex, false);
         return buildResponse(HttpStatus.valueOf(ex.getStatus()), ex, request);
     }
 
@@ -53,7 +49,7 @@ public class GlobalControllerExceptionHandler {
             BaseApiExceptionModel ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, false);
         return buildResponse(HttpStatus.NOT_FOUND, ex, request);
     }
 
@@ -62,7 +58,7 @@ public class GlobalControllerExceptionHandler {
             ConflictException ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, true);
         return buildResponse(HttpStatus.CONFLICT, ex, request);
     }
 
@@ -71,7 +67,7 @@ public class GlobalControllerExceptionHandler {
             CurrencyMismatchException ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, false);
         return buildResponse(HttpStatus.BAD_REQUEST, ex, request);
     }
 
@@ -80,7 +76,7 @@ public class GlobalControllerExceptionHandler {
             WalletLockedException ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, false);
         return buildResponse(HttpStatus.LOCKED, ex, request);
     }
 
@@ -89,13 +85,18 @@ public class GlobalControllerExceptionHandler {
             RateLimitExceededException ex,
             HttpServletRequest request
     ) {
-        logApiError(ex);
+        logApi(ex, false);
         return buildResponse(HttpStatus.TOO_MANY_REQUESTS, ex, request);
     }
 
-    /* ============================================================
-       VALIDATION & TRANSACTION FAILURES
-       ============================================================ */
+    @ExceptionHandler(TransactionFailedException.class)
+    public ResponseEntity<ErrorResponse> handleTransactionFailed(
+            TransactionFailedException ex,
+            HttpServletRequest request
+    ) {
+        logApi(ex, false);
+        return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex, request);
+    }
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<BadRequestErrorModel> handleValidation(BindException exception) {
@@ -106,18 +107,6 @@ public class GlobalControllerExceptionHandler {
         BadRequestErrorModel errorModel = new BadRequestErrorModel("One or more validation errors occurred", validationErrors);
         log.warn("Validation error: {}", errorModel);
         return new ResponseEntity<>(errorModel, null, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(TransactionFailedException.class)
-    public ResponseEntity<BadRequestErrorModel> handleTransactionFailed(TransactionFailedException ex) {
-        // Since TransactionFailedException doesn't have a field, we use a generic one or assume "amount"
-        List<BadRequestErrorModel.ValidationError> validationErrors = List.of(
-                new BadRequestErrorModel.ValidationError("transaction", ex.getMessage())
-        );
-
-        BadRequestErrorModel errorModel = new BadRequestErrorModel("Transaction failed", validationErrors);
-        log.warn("Transaction failed: {}", errorModel);
-        return new ResponseEntity<>(errorModel, null, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     private static String getField(ObjectError error) {
@@ -131,9 +120,6 @@ public class GlobalControllerExceptionHandler {
         return field;
     }
 
-    /* ============================================================
-       INTERNAL / FALLBACK
-       ============================================================ */
 
     @ExceptionHandler(InternalServerErrorException.class)
     public ResponseEntity<ErrorResponse> handleInternalError(
@@ -161,10 +147,6 @@ public class GlobalControllerExceptionHandler {
                 ));
     }
 
-    /* ============================================================
-       INTERNAL
-       ============================================================ */
-
     private ResponseEntity<ErrorResponse> buildResponse(
             HttpStatus status,
             BaseApiExceptionModel ex,
@@ -175,12 +157,15 @@ public class GlobalControllerExceptionHandler {
                 .body(new ErrorResponse(ex, HtmlUtils.htmlEscape(request.getRequestURI())));
     }
 
-    private void logApiError(BaseApiExceptionModel ex) {
-        log.error(
-                "API Error [{} {}]: {}",
-                ex.getStatus(),
-                ex.getError(),
-                ex.getMessage()
-        );
+    private void logApi(BaseApiExceptionModel ex, boolean isError) {
+
+        String errorMessage = "API Error [%s %s]: %s";
+
+        if (isError) {
+            log.error(errorMessage);
+        } else {
+            log.warn(errorMessage);
+        }
+
     }
 }

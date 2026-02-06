@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS syneronix;
+
 CREATE TABLE syneronix.wallets
 (
     id         UUID           NOT NULL,

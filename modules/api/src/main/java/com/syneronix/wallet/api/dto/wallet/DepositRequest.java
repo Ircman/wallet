@@ -1,5 +1,6 @@
-package com.syneronix.wallet.api.dto;
+package com.syneronix.wallet.api.dto.wallet;
 
+import com.syneronix.wallet.api.dto.AbstractBaseRequest;
 import com.syneronix.wallet.common.Currency;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;

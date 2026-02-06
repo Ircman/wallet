@@ -1,4 +1,4 @@
-package com.syneronix.wallet.api.dto;
+package com.syneronix.wallet.api.dto.wallet;
 
 import com.syneronix.wallet.domain.TransactionEntity;
 import com.syneronix.wallet.domain.WalletEntity;
@@ -11,6 +11,8 @@ public interface WalletMapper {
 
     WalletResponse entityToResponse(WalletEntity entity);
 
+    WalletResponse toWalletCreateResponse(CreateWalletRequest request);
+
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "userId", source = "request.userId")
     @Mapping(target = "currency", source = "request.currency")
@@ -21,8 +23,6 @@ public interface WalletMapper {
     @Mapping(target = "requestId", source = "request.requestId")
     WalletResponse toWalletCreateResponse(WalletEntity entity, CreateWalletRequest request);
 
-    @Mapping(target = "status", expression = "java(com.syneronix.wallet.common.WalletStatus.PENDING)")
-    WalletResponse toWalletCreateResponse(CreateWalletRequest request);
 
     TransactionResponse toTransactionResponse(TransactionEntity entity);
 

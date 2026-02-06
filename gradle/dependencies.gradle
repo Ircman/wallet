@@ -8,6 +8,7 @@ ext {
     guava = "32.1.2-jre"
     mapstructVersion = '1.5.5.Final'
     lombokVersion = '1.18.30'
+    testcontainersVersion = '1.19.3'
 }
 
 ext {
@@ -65,6 +66,11 @@ ext {
             ],
             test_tools                      : [
                     "org.mockito:mockito-junit-jupiter"
+            ],
+            testcontainers: [
+                    "org.testcontainers:testcontainers:${testcontainersVersion}",
+                    "org.testcontainers:junit-jupiter:${testcontainersVersion}",
+                    "org.testcontainers:postgresql:${testcontainersVersion}"
             ],
             springTest                      : [
                     "org.springframework.boot:spring-boot-starter-test"

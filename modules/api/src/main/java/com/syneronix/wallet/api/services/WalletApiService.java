@@ -1,6 +1,7 @@
 package com.syneronix.wallet.api.services;
 
-import com.syneronix.wallet.api.dto.*;
+import com.syneronix.wallet.api.dto.AbstractBaseRequest;
+import com.syneronix.wallet.api.dto.wallet.*;
 import com.syneronix.wallet.api.errors.*;
 import com.syneronix.wallet.common.Currency;
 import com.syneronix.wallet.common.RequestType;
@@ -35,7 +36,7 @@ public class WalletApiService {
     public WalletResponse createWallet(@Valid CreateWalletRequest request) {
         log.info("Processing createWallet request. RequestID: {}", request.getRequestId());
 
-        return execute(
+        return proccessRequest(
                 request,
                 RequestType.CREATE_WALLET,
                 request.getCurrency(),
@@ -60,7 +61,7 @@ public class WalletApiService {
             throw new WalletNotFoundException(walletId);
         }
 
-        return execute(
+        return proccessRequest(
                 request,
                 RequestType.DEPOSIT,
                 request.getCurrency(),
@@ -90,7 +91,7 @@ public class WalletApiService {
             throw new WalletNotFoundException(walletId);
         }
 
-        return execute(
+        return proccessRequest(
                 request,
                 RequestType.WITHDRAW,
                 request.getCurrency(),
@@ -116,14 +117,8 @@ public class WalletApiService {
 
     public TransactionResponse transfer(@Valid TransferRequest request) {
         log.info("Processing transfer request. RequestID: {}", request.getRequestId());
-        if (walletService.findByWalletIdReadOnly(request.getFromWalletId()).isEmpty()) {
-            throw new WalletNotFoundException(request.getFromWalletId());
-        }
-        if (walletService.findByWalletIdReadOnly(request.getToWalletId()).isEmpty()) {
-            throw new WalletNotFoundException(request.getToWalletId());
-        }
 
-        return execute(
+        return proccessRequest(
                 request,
                 RequestType.TRANSFER,
                 request.getCurrency(),
@@ -151,6 +146,10 @@ public class WalletApiService {
                     WalletEntity fromWallet = wallets.stream().filter(w -> w.getId().equals(request.getFromWalletId())).findFirst().orElseThrow();
                     WalletEntity toWallet = wallets.stream().filter(w -> w.getId().equals(request.getToWalletId())).findFirst().orElseThrow();
 
+                    if (fromWallet.getId().equals(toWallet.getId())) {
+                        throw new BadRequestException("Cannot transfer to the same wallet");
+                    }
+
                     policyService.validate(fromWallet);
                     policyService.validate(toWallet);
 
@@ -174,8 +173,7 @@ public class WalletApiService {
                 .collect(Collectors.toList());
     }
 
-
-    private <T, R extends AbstractBaseRequest> T execute(
+    private <T, R extends AbstractBaseRequest> T proccessRequest(
             R request,
             RequestType requestType,
             Currency currency,

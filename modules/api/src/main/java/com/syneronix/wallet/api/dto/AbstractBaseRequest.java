@@ -11,10 +11,10 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
-@JsonNaming(SnakeCaseStrategy.class)
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonNaming(SnakeCaseStrategy.class)
 @Schema(description = "Base request for all wallet operations")
 public abstract class AbstractBaseRequest {
 

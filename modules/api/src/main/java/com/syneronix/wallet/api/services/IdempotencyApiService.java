@@ -1,6 +1,6 @@
 package com.syneronix.wallet.api.services;
 
-import com.syneronix.wallet.api.dto.*;
+import com.syneronix.wallet.api.dto.wallet.*;
 import com.syneronix.wallet.api.errors.InternalServerErrorException;
 import com.syneronix.wallet.api.errors.PreviousRequestFailedException;
 import com.syneronix.wallet.api.errors.RequestTamperingException;

@@ -1,6 +1,6 @@
 package com.syneronix.wallet.api.controllers.v1;
 
-import com.syneronix.wallet.api.dto.*;
+import com.syneronix.wallet.api.dto.wallet.*;
 import com.syneronix.wallet.api.errors.ErrorResponse;
 import com.syneronix.wallet.api.services.WalletApiService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +35,9 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Wallet created successfully",
                             content = @Content(schema = @Schema(implementation = WalletResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Wallet already exists for this user and currency", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "409", description = "Wallet already exists", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletResponse> createWallet(@Valid @RequestBody CreateWalletRequest request) {

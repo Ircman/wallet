@@ -52,6 +52,7 @@ spring:
         use_sql_comments: false
         format_sql: true
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        default_schema: syneronix
         types.jackson.object.mapper: com.syneronix.wallet.spring.CustomObjectMapperSupplier
         integration:
           envers:
