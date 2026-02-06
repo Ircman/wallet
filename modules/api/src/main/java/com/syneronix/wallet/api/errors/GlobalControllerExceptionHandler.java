@@ -159,8 +159,7 @@ public class GlobalControllerExceptionHandler {
 
     private void logApi(BaseApiExceptionModel ex, boolean isError) {
 
-        String errorMessage = "API Error [%s %s]: %s";
-
+        String errorMessage = "API Error [%s %s]: %s".formatted(ex.getStatus(), ex.getError(), ex.getMessage());
         if (isError) {
             log.error(errorMessage);
         } else {
