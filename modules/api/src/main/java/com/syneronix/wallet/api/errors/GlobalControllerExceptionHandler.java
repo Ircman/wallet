@@ -94,7 +94,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     /* ============================================================
-       VALIDATION
+       VALIDATION & TRANSACTION FAILURES
        ============================================================ */
 
     @ExceptionHandler(BindException.class)
@@ -106,6 +106,18 @@ public class GlobalControllerExceptionHandler {
         BadRequestErrorModel errorModel = new BadRequestErrorModel("One or more validation errors occurred", validationErrors);
         log.warn("Validation error: {}", errorModel);
         return new ResponseEntity<>(errorModel, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TransactionFailedException.class)
+    public ResponseEntity<BadRequestErrorModel> handleTransactionFailed(TransactionFailedException ex) {
+        // Since TransactionFailedException doesn't have a field, we use a generic one or assume "amount"
+        List<BadRequestErrorModel.ValidationError> validationErrors = List.of(
+                new BadRequestErrorModel.ValidationError("transaction", ex.getMessage())
+        );
+
+        BadRequestErrorModel errorModel = new BadRequestErrorModel("Transaction failed", validationErrors);
+        log.warn("Transaction failed: {}", errorModel);
+        return new ResponseEntity<>(errorModel, null, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     private static String getField(ObjectError error) {
