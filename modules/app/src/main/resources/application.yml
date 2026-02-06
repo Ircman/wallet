@@ -52,6 +52,10 @@ syneronix:
   flyway:
     locations: classpath:db/migration
     flyway-environment: ${environment:prd}
+  policy:
+    rate-limit:
+      max-transactions: 5
+      window-minutes: 1
 
 logging:
   config: classpath:logback-spring.xml

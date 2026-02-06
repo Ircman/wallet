@@ -9,7 +9,7 @@ CREATE TABLE syneronix.idempotency_keys
     currency         VARCHAR(3)     NOT NULL,
     from_wallet_id   UUID,
     to_wallet_id     UUID,
-    status           VARCHAR(255)   NOT NULL,
+    status           VARCHAR(20)   NOT NULL,
     http_status_code INTEGER        NOT NULL,
     request_body     JSONB          NOT NULL,
     request_hash     VARCHAR(64),

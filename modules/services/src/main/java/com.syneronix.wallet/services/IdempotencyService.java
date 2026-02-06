@@ -1,5 +1,7 @@
 package com.syneronix.wallet.services;
 
+import com.syneronix.wallet.api.errors.PreviousRequestFailedException;
+import com.syneronix.wallet.api.errors.RequestTamperingException;
 import com.syneronix.wallet.common.Currency;
 import com.syneronix.wallet.common.RequestType;
 import com.syneronix.wallet.common.TransactionStatus;
@@ -9,6 +11,7 @@ import com.syneronix.wallet.mappers.JsonMapper;
 import com.syneronix.wallet.utils.HashUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,14 +66,35 @@ public class IdempotencyService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void rejected(UUID requestId, Object responseBody, String reason, int httpStatus) {
+        IdempotencyKeyEntity entity = idempotencyKeyRepository.findByRequestId(requestId)
+                .orElseThrow(() -> new RuntimeException("Idempotency key not found for success update: " + requestId));
+        entity.setStatus(TransactionStatus.REJECTED);
+        entity.setHttpStatusCode(httpStatus);
+        entity.setResponseBody(jsonMapper.toJson(responseBody));
+        entity.setFailReason(truncateReason(reason));
+        idempotencyKeyRepository.save(entity);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void error(UUID requestId, String reason, int httpStatus) {
         IdempotencyKeyEntity entity = idempotencyKeyRepository.findByRequestId(requestId)
                 .orElseThrow(() -> new RuntimeException("Idempotency key not found for error update: " + requestId));
 
         entity.setStatus(TransactionStatus.FAILED);
         entity.setHttpStatusCode(httpStatus);
-        entity.setFailReason(reason);
+        entity.setFailReason(truncateReason(reason));
 
         idempotencyKeyRepository.save(entity);
+    }
+
+
+    private String truncateReason(String reason) {
+        if (StringUtils.isBlank(reason)) {
+            return null;
+        }
+        return reason.length() > 255
+                ? reason.substring(0, 255)
+                : reason;
     }
 }

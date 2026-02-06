@@ -4,8 +4,7 @@ public enum WalletStatus {
     PENDING,
     ACTIVE,
     INACTIVE,
-    FROZEN,
-    BLOCKED,
+    SUSPENDED,
     CLOSED;
 
     public boolean isActive() {

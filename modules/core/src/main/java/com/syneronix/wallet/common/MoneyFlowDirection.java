@@ -3,8 +3,8 @@ package com.syneronix.wallet.common;
 import java.util.Arrays;
 
 public enum MoneyFlowDirection {
-    CREDIT,
-    DEBIT;
+    CREDIT, //+
+    DEBIT; //-
 
     public static MoneyFlowDirection fromCode(String code) {
         return Arrays.stream(values())

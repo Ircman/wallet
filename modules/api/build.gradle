@@ -1,0 +1,22 @@
+apply from: "${rootDir}/gradle/java.gradle"
+apply from: "${rootDir}/gradle/itest.gradle"
+
+dependencies {
+    implementation libs.springBootWeb
+    implementation libs.openApi
+    implementation libs.hibernate
+    implementation libs.hibernateValidator
+    implementation libs.mapstruct
+
+    annotationProcessor libs.mapstruct
+    annotationProcessor libs.lombokBindingProcessor
+
+    implementation project(":modules:shared:spring")
+    implementation project(":modules:shared:hibernate")
+
+    implementation project(":modules:core")
+    implementation project(":modules:services")
+
+    testImplementation project(":modules:shared:testing")
+    itestImplementation project(":modules:shared:testing")
+}

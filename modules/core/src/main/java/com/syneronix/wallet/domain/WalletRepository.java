@@ -18,10 +18,13 @@ public interface WalletRepository extends JpaRepository<WalletEntity, UUID> {
 
     Optional<WalletEntity> findByUserIdAndCurrency(UUID userId, Currency currency);
 
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<WalletEntity> findWithLockingById(UUID id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select w from WalletEntity w where w.id in :ids and w.currency = :currency order by w.id")
     List<WalletEntity> lockAllByIdsAndCurrencyOrdered(@Param("ids") List<UUID> ids, @Param("currency") Currency currency);
+
+
 }
