@@ -31,12 +31,12 @@ public class WalletController {
 
     private final WalletApiService walletApiService;
 
-    @Operation(summary = "Create a new wallet", description = "Creates a new wallet for a user with a specific currency.",
+    @Operation(summary = "Create a new wallet", description = "Creates a new wallet for a user with a specific currency. This operation is idempotent.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Wallet created successfully",
                             content = @Content(schema = @Schema(implementation = WalletResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "Wallet already exists", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "409", description = "Wallet already exists or conflict", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -60,7 +60,7 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Wallet found",
                             content = @Content(schema = @Schema(implementation = WalletResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
                     @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @GetMapping("/{id}")
@@ -68,7 +68,7 @@ public class WalletController {
         return ResponseEntity.ok(walletApiService.getWallet(id));
     }
 
-    @Operation(summary = "Deposit funds", description = "Deposits funds into a specific wallet. Idempotent operation.",
+    @Operation(summary = "Deposit funds", description = "Deposits funds into a specific wallet. This operation is idempotent.",
             parameters = {
                     @Parameter(name = "id", description = "ID of the wallet to deposit to",
                             example = "cfb87bfc-6e9d-407e-8cc9-9f11e48bd390", in = ParameterIn.PATH, required = true)
@@ -76,17 +76,18 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Deposit successful",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters (e.g. currency mismatch)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (e.g. transaction failed)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping(value = "/{id}/deposit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponse> deposit(@PathVariable UUID id, @Valid @RequestBody DepositRequest request) {
         return ResponseEntity.ok(walletApiService.deposit(id, request));
     }
 
-    @Operation(summary = "Withdraw funds", description = "Withdraws funds from a specific wallet. Checks balance and limits.",
+    @Operation(summary = "Withdraw funds", description = "Withdraws funds from a specific wallet. Checks balance and limits. This operation is idempotent.",
             parameters = {
                     @Parameter(name = "id", description = "ID of the wallet to withdraw from",
                             example = "cfb87bfc-6e9d-407e-8cc9-9f11e48bd390", in = ParameterIn.PATH, required = true)
@@ -94,24 +95,26 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Withdrawal successful",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., insufficient funds, limit exceeded, duplicate request)", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (e.g. insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping(value = "/{id}/withdraw", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponse> withdraw(@PathVariable UUID id, @Valid @RequestBody WithdrawRequest request) {
         return ResponseEntity.ok(walletApiService.withdraw(id, request));
     }
 
-    @Operation(summary = "Transfer funds", description = "Transfers funds between two wallets. Atomic operation.",
+    @Operation(summary = "Transfer funds", description = "Transfers funds between two wallets. Atomic operation. This operation is idempotent.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transfer successful",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters (e.g., same wallet)", content = @Content),
-                    @ApiResponse(responseCode = "404", description = "One or both wallets not found", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., insufficient funds, limit exceeded, duplicate request)", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters (e.g., same wallet)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "One or both wallets not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (e.g. insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     @PostMapping(value = "/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponse> transfer(@Valid @RequestBody TransferRequest request) {

@@ -1,6 +1,7 @@
 package com.syneronix.wallet.services;
 
 import com.syneronix.wallet.api.errors.ConflictException;
+import com.syneronix.wallet.api.errors.NotFoundException;
 import com.syneronix.wallet.api.errors.WalletNotFoundException;
 import com.syneronix.wallet.common.WalletStatus;
 import com.syneronix.wallet.domain.BlacklistEntity;
@@ -24,9 +25,9 @@ public class BlacklistService {
     private final WalletRepository walletRepository;
 
     @Transactional
-    public void blockWallet(UUID walletId, String reason) {
-        WalletEntity walletEntity = walletRepository.
-                findWithLockingById(walletId).orElseThrow(() -> new WalletNotFoundException(walletId));
+    public BlacklistEntity blockWallet(UUID walletId, String reason) {
+        WalletEntity walletEntity = walletRepository.findWithLockingById(walletId)
+                .orElseThrow(() -> new WalletNotFoundException(walletId));
 
         if (blacklistRepository.existsByWalletId(walletId)) {
             throw new ConflictException("Wallet with ID %s is already blocked.".formatted(walletId.toString()));
@@ -35,37 +36,31 @@ public class BlacklistService {
         BlacklistEntity entity = new BlacklistEntity();
         entity.setWalletId(walletId);
         entity.setReason(reason);
-        blacklistRepository.save(entity);
+        BlacklistEntity savedEntity = blacklistRepository.save(entity);
 
         walletEntity.setStatus(WalletStatus.SUSPENDED);
         walletRepository.save(walletEntity);
 
         log.info("Wallet {} blocked. Reason: {}", walletId, reason);
+        return savedEntity;
     }
 
     @Transactional
-    public void unblockWallet(UUID walletId) {
-        boolean wasInBlacklist = blacklistRepository.findByWalletId(walletId)
-                .map(entity -> {
-                    blacklistRepository.delete(entity);
-                    return true;
-                }).orElse(false);
+    public BlacklistEntity unblockWallet(UUID walletId) {
+        BlacklistEntity entity = blacklistRepository.findByWalletId(walletId)
+                .orElseThrow(() -> new NotFoundException("Wallet is not blocked: " + walletId));
 
-        if (!wasInBlacklist) {
-            log.debug("Wallet ID {} was not in blacklist", walletId);
-        }
+        WalletEntity walletEntity = walletRepository.findWithLockingById(walletId)
+                .orElseThrow(() -> new WalletNotFoundException(walletId));
 
-        walletRepository.findWithLockingById(walletId).ifPresentOrElse(
-                wallet -> {
-                    wallet.setStatus(WalletStatus.ACTIVE);
-                    walletRepository.save(wallet);
-                    log.info("Wallet {} status updated to ACTIVE", walletId);
-                },
-                () -> log.info("Wallet {} does not exist in our database, only blacklist entry processed", walletId)
-        );
-        log.info("Unblock process completed for wallet ID {}", walletId);
+        blacklistRepository.delete(entity);
+
+        walletEntity.setStatus(WalletStatus.ACTIVE);
+        walletRepository.save(walletEntity);
+
+        log.info("Wallet {} unblocked and status set to ACTIVE", walletId);
+        return entity;
     }
-
 
     @Transactional(readOnly = true)
     public boolean isBlocked(UUID walletId) {
@@ -76,6 +71,4 @@ public class BlacklistService {
     public List<BlacklistEntity> getAllBlockedWallets() {
         return blacklistRepository.findAll();
     }
-
-
 }

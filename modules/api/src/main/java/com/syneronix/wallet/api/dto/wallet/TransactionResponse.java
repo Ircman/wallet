@@ -16,19 +16,19 @@ import java.util.UUID;
 @Schema(description = "Response containing transaction details")
 @EqualsAndHashCode(callSuper = true)
 public class TransactionResponse extends AbstractBaseResponse {
-    @Schema(description = "Unique identifier of the transaction", example = "24e6e87b-2767-40ff-83c4-79fe4df0859a")
+    @Schema(description = "Unique identifier of the transaction", example = "24e6e87b-2767-40ff-83c4-79fe4df0859a", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID id;
 
-    @Schema(description = "Type of the transaction", example = "DEPOSIT", oneOf = TransactionType.class)
+    @Schema(description = "Type of the transaction", example = "DEPOSIT", oneOf = TransactionType.class, requiredMode = Schema.RequiredMode.REQUIRED)
     private TransactionType type;
 
-    @Schema(description = "Status of the transaction", example = "COMPLETED", oneOf =  TransactionStatus.class)
+    @Schema(description = "Status of the transaction", example = "COMPLETED", oneOf = TransactionStatus.class, requiredMode = Schema.RequiredMode.REQUIRED)
     private TransactionStatus status;
 
-    @Schema(description = "Amount of the transaction", example = "100.00")
+    @Schema(description = "Amount of the transaction", example = "100.00", requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal amount;
 
-    @Schema(description = "Currency of the transaction", example = "USD", oneOf = Currency.class)
+    @Schema(description = "Currency of the transaction", example = "USD", oneOf = Currency.class, requiredMode = Schema.RequiredMode.REQUIRED)
     private Currency currency;
 
     @Schema(description = "ID of the source wallet (if applicable)", example = "3e28f430-269e-4def-a162-f621148dc7e7")
@@ -37,7 +37,7 @@ public class TransactionResponse extends AbstractBaseResponse {
     @Schema(description = "ID of the destination wallet (if applicable)", example = "cace0df3-5878-4763-a200-8372dad6fbf2")
     private UUID toWalletId;
 
-    @Schema(description = "Timestamp when the transaction was created", example = "2023-10-27T10:00:00Z")
+    @Schema(description = "Timestamp when the transaction was created", example = "2023-10-27T10:00:00Z", requiredMode = Schema.RequiredMode.REQUIRED)
     private Instant createdAt;
 
     @Schema(description = "Reason for failure (if status is FAILED)", example = "Insufficient funds")
