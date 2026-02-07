@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS syneronix;
 
-CREATE TABLE syneronix.wallets
+CREATE TABLE IF NOT EXISTS syneronix.wallets
 (
     id         UUID           NOT NULL,
     created_at TIMESTAMP      NOT NULL,
@@ -18,4 +18,4 @@ CREATE TABLE syneronix.wallets
 ALTER TABLE syneronix.wallets
     OWNER TO wallet_db_user;
 
-CREATE INDEX idx_wallets_user_id ON syneronix.wallets (user_id);
+CREATE INDEX IF NOT EXISTS idx_wallets_user_id ON syneronix.wallets (user_id);

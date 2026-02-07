@@ -1,4 +1,4 @@
-CREATE TABLE syneronix.blacklist
+CREATE TABLE IF NOT EXISTS syneronix.blacklist
 (
     id             UUID           NOT NULL,
     created_at     TIMESTAMP      NOT NULL,
@@ -6,16 +6,12 @@ CREATE TABLE syneronix.blacklist
     version        BIGINT         NOT NULL,
     wallet_id      UUID           NOT NULL,
     reason         VARCHAR(255)   NOT NULL,
-    CONSTRAINT pk_blacklist PRIMARY KEY (id)
+    CONSTRAINT pk_blacklist PRIMARY KEY (id),
+    CONSTRAINT uc_blacklist_wallet_id UNIQUE (wallet_id),
+    CONSTRAINT FK_BLACKLIST_ON_WALLET FOREIGN KEY (wallet_id) REFERENCES syneronix.wallets (id)
 );
 
 ALTER TABLE syneronix.blacklist
     OWNER TO wallet_db_user;
 
-ALTER TABLE syneronix.blacklist
-    ADD CONSTRAINT uc_blacklist_wallet_id UNIQUE (wallet_id);
-
-ALTER TABLE syneronix.blacklist
-    ADD CONSTRAINT FK_BLACKLIST_ON_WALLET FOREIGN KEY (wallet_id) REFERENCES syneronix.wallets (id);
-
-CREATE INDEX idx_blacklist_wallet_id ON syneronix.blacklist (wallet_id);
+CREATE INDEX IF NOT EXISTS idx_blacklist_wallet_id ON syneronix.blacklist (wallet_id);

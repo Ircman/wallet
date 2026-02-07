@@ -1,4 +1,4 @@
-CREATE TABLE syneronix.ledger_entries
+CREATE TABLE IF NOT EXISTS syneronix.ledger_entries
 (
     id             UUID           NOT NULL,
     created_at     TIMESTAMP      NOT NULL,
@@ -11,17 +11,13 @@ CREATE TABLE syneronix.ledger_entries
     direction      VARCHAR(6)     NOT NULL,
     balance_after  DECIMAL(19, 4) NOT NULL,
     CONSTRAINT pk_ledger_entries PRIMARY KEY (id),
-    CONSTRAINT chk_ledger_entries_amount_positive CHECK (amount > 0)
+    CONSTRAINT chk_ledger_entries_amount_positive CHECK (amount > 0),
+    CONSTRAINT FK_LEDGER_ENTRIES_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES syneronix.transactions (id),
+    CONSTRAINT FK_LEDGER_ENTRIES_ON_WALLET FOREIGN KEY (wallet_id) REFERENCES syneronix.wallets (id)
 );
 
 ALTER TABLE syneronix.ledger_entries
     OWNER TO wallet_db_user;
 
-ALTER TABLE syneronix.ledger_entries
-    ADD CONSTRAINT FK_LEDGER_ENTRIES_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES syneronix.transactions (id);
-
-ALTER TABLE syneronix.ledger_entries
-    ADD CONSTRAINT FK_LEDGER_ENTRIES_ON_WALLET FOREIGN KEY (wallet_id) REFERENCES syneronix.wallets (id);
-
-CREATE INDEX idx_ledger_entries_transaction_id ON syneronix.ledger_entries (transaction_id);
-CREATE INDEX idx_ledger_entries_wallet_id ON syneronix.ledger_entries (wallet_id);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_transaction_id ON syneronix.ledger_entries (transaction_id);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_wallet_id ON syneronix.ledger_entries (wallet_id);
