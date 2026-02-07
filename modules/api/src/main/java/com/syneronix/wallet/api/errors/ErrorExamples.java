@@ -7,12 +7,10 @@ import lombok.experimental.UtilityClass;
 public class ErrorExamples {
 
     public static final String WALLET_NOT_FOUND_JSON = "{\"code\": \"NOT_FOUND\", \"errorCode\": 404, \"message\": \"Wallet with ID a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11 not found\", \"path\": \"/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\"}";
-    public static final String INSUFFICIENT_FUNDS_JSON = "{\"code\": \"CONFLICT\", \"errorCode\": 409, \"message\": \"Insufficient funds\", \"path\": \"/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11/withdraw\"}";
     public static final String CURRENCY_MISMATCH_JSON = "{\"code\": \"BAD_REQUEST\", \"errorCode\": 400, \"message\": \"Currency mismatch: Wallet is USD but request is EUR\", \"path\": \"/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11/deposit\"}";
     public static final String TRANSACTION_FAILED_JSON = "{\"code\": \"UNPROCESSABLE_ENTITY\", \"errorCode\": 422, \"message\": \"Transaction failed: Insufficient funds\", \"path\": \"/api/v1/wallets/...\"}";
     public static final String VALIDATION_ERROR_JSON = "{\"code\": \"BAD_REQUEST\", \"description\": \"One or more validation errors occurred\", \"validationError\": [{\"field\": \"amount\", \"errorMessage\": \"must be greater than 0\"}]}";
     public static final String INTERNAL_SERVER_ERROR_JSON = "{\"code\": \"INTERNAL_SERVER_ERROR\", \"errorCode\": 500, \"message\": \"Unexpected server error\", \"path\": \"/api/v1/wallets/...\"}";
-    public static final String REQUEST_TAMPERING_JSON = "{\"code\": \"BAD_REQUEST\", \"errorCode\": 400, \"message\": \"Invalid request\", \"path\": \"/api/v1/wallets/...\"}";
     public static final String WALLET_LOCKED_JSON = "{\"code\": \"LOCKED\", \"errorCode\": 423, \"message\": \"Wallet is locked\", \"path\": \"/api/v1/wallets/...\"}";
     public static final String RATE_LIMIT_EXCEEDED_JSON = "{\"code\": \"TOO_MANY_REQUESTS\", \"errorCode\": 429, \"message\": \"Rate limit exceeded\", \"path\": \"/api/v1/wallets/...\"}";
 
