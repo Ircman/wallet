@@ -12,6 +12,7 @@ import com.syneronix.wallet.services.PolicyService;
 import com.syneronix.wallet.services.TransactionService;
 import com.syneronix.wallet.services.WalletService;
 import com.syneronix.wallet.testing.BaseUnitTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,6 +43,14 @@ class WalletApiServiceTest extends BaseUnitTest {
     @InjectMocks
     private WalletApiService walletApiService;
 
+    private UUID walletId;
+
+    @BeforeEach
+    void setup() {
+        walletId = uuid();
+    }
+
+
     @Test
     void createWallet_shouldSucceed() {
         CreateWalletRequest request = new CreateWalletRequest();
@@ -65,7 +74,7 @@ class WalletApiServiceTest extends BaseUnitTest {
 
     @Test
     void deposit_shouldSucceed() {
-        UUID walletId = uuid();
+
         DepositRequest request = new DepositRequest();
         request.setRequestId(uuid());
         request.setAmount(BigDecimal.TEN);
@@ -90,7 +99,7 @@ class WalletApiServiceTest extends BaseUnitTest {
 
     @Test
     void deposit_shouldThrow_whenWalletNotFound() {
-        UUID walletId = uuid();
+
         DepositRequest request = new DepositRequest();
         request.setRequestId(uuid());
 
@@ -99,13 +108,12 @@ class WalletApiServiceTest extends BaseUnitTest {
 
         assertThrows(WalletNotFoundException.class, () -> walletApiService.deposit(walletId, request));
 
-        // Verify idempotency rejected with 404
         verify(idempotencyApiService).rejected(eq(request.getRequestId()), eq(request), anyString(), eq(404));
     }
 
     @Test
     void deposit_shouldThrow_whenTransactionFailed() {
-        UUID walletId = uuid();
+
         DepositRequest request = new DepositRequest();
         request.setRequestId(uuid());
         request.setCurrency(Currency.USD);

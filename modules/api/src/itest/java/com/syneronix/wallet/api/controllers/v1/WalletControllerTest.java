@@ -110,7 +110,6 @@ class WalletControllerTest extends BaseMockMvcTest {
                 .andExpect(jsonPath("$.amount").value(50))
                 .andExpect(jsonPath("$.status").value("COMPLETED"));
 
-        // Verify balance updated
         mockMvc.perform(get(BASE_URL + "/{id}", testWallet.getId()))
                 .andExpect(jsonPath("$.balance").value(150.0));
     }
@@ -129,19 +128,16 @@ class WalletControllerTest extends BaseMockMvcTest {
     void deposit_shouldReturnOk_whenIdempotentRequest() throws Exception {
         DepositRequest request = createDepositRequest(BigDecimal.valueOf(50), Currency.USD);
 
-        // First request
         mockMvc.perform(post(BASE_URL + "/{id}/deposit", testWallet.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request)))
                 .andExpect(status().isOk());
 
-        // Second request (same ID)
         mockMvc.perform(post(BASE_URL + "/{id}/deposit", testWallet.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request)))
                 .andExpect(status().isOk());
 
-        // Verify balance added ONLY ONCE
         mockMvc.perform(get(BASE_URL + "/{id}", testWallet.getId()))
                 .andExpect(jsonPath("$.balance").value(150.0));
     }
@@ -211,7 +207,6 @@ class WalletControllerTest extends BaseMockMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("COMPLETED"));
 
-        // Verify balances
         mockMvc.perform(get(BASE_URL + "/{id}", sender.getId()))
                 .andExpect(jsonPath("$.balance").value(50.0));
 
@@ -234,7 +229,7 @@ class WalletControllerTest extends BaseMockMvcTest {
 
     @Test
     void transfer_shouldReturnLocked_whenSenderIsBlacklisted() throws Exception {
-        WalletEntity sender = createWallet(BigDecimal.valueOf(100));
+        WalletEntity sender = createWallet(BigDecimal.valueOf(50));
         WalletEntity receiver = createWallet(BigDecimal.ZERO);
         blacklistWallet(sender.getId());
 
@@ -272,7 +267,7 @@ class WalletControllerTest extends BaseMockMvcTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
-    // --- Helpers ---
+    // --- Reused methods ---
 
     private WalletEntity createWallet(BigDecimal balance) {
         WalletEntity walletEntity = new WalletEntity();
