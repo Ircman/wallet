@@ -37,13 +37,7 @@ class ManagementControllerTest extends BaseMockMvcTest {
     void setUp() {
         blacklistRepository.deleteAll();
         walletRepository.deleteAll();
-
-        testWallet = new WalletEntity();
-        testWallet.setUserId(UUID.randomUUID());
-        testWallet.setCurrency(Currency.USD);
-        testWallet.setBalance(BigDecimal.ZERO);
-        testWallet.setStatus(WalletStatus.ACTIVE);
-        testWallet = walletRepository.save(testWallet);
+        testWallet = createWallet();
     }
 
     @Test
@@ -70,7 +64,6 @@ class ManagementControllerTest extends BaseMockMvcTest {
 
     @Test
     void blockWallet_shouldReturnConflict_whenWalletAlreadyBlockedTest() throws Exception {
-        // Pre-block
         createBlacklistEntity(testWallet.getId(), "Already blocked");
 
         BlockWalletRequest request = createBlockWalletRequest(testWallet.getId());
@@ -100,12 +93,17 @@ class ManagementControllerTest extends BaseMockMvcTest {
 
     @Test
     void getBlacklist_shouldReturnListOfBlockedWalletsTest() throws Exception {
-        createBlacklistEntity(testWallet.getId(), "Listed");
+
+        WalletEntity wallet2 = createWallet();
+
+        createBlacklistEntity(testWallet.getId(), "Listed1");
+        createBlacklistEntity(wallet2.getId(), "Listed2");
 
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].wallet_id").value(testWallet.getId().toString()));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].wallet_id").value(testWallet.getId().toString()))
+                .andExpect(jsonPath("$[1].wallet_id").value(wallet2.getId().toString()));
     }
 
     private BlockWalletRequest createBlockWalletRequest(UUID walletId) {
@@ -123,4 +121,14 @@ class ManagementControllerTest extends BaseMockMvcTest {
         blacklistEntity.setReason(reason);
         blacklistRepository.save(blacklistEntity);
     }
+
+    private WalletEntity createWallet() {
+        WalletEntity walletEntity = new WalletEntity();
+        walletEntity.setUserId(uuid());
+        walletEntity.setCurrency(Currency.USD);
+        walletEntity.setBalance(BigDecimal.ZERO);
+        walletEntity.setStatus(WalletStatus.ACTIVE);
+        return walletRepository.save(walletEntity);
+    }
+
 }
