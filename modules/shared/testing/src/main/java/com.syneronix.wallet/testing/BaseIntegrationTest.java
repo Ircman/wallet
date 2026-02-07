@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Tag("integration")
@@ -22,13 +20,4 @@ public abstract class BaseIntegrationTest extends Assertions {
     protected static UUID uuid() {
         return UUID.randomUUID();
     }
-
-    protected static LocalDateTime now() {
-        return LocalDateTime.now();
-    }
-
-    protected static LocalDate today() {
-        return LocalDate.now();
-    }
-
 }

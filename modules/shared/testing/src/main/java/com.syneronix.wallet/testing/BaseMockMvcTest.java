@@ -37,11 +37,6 @@ public class BaseMockMvcTest {
     }
 
     @SneakyThrows
-    protected <T> T fromJson(String json, Class<T> clazz) {
-        return objectMapper.readValue(json, clazz);
-    }
-
-    @SneakyThrows
     protected String toJson(Object obj) {
         return objectMapper.writeValueAsString(obj);
     }

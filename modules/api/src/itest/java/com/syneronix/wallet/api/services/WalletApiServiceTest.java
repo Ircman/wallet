@@ -100,9 +100,7 @@ class WalletApiServiceTest extends BaseMockMvcTest {
         doThrow(new RuntimeException("Simulated DB Error"))
                 .when(transactionService).deposit(any(), any(), any(), any());
 
-        assertThrows(InternalServerErrorException.class, () -> {
-            walletApiService.deposit(testWallet.getId(), request);
-        });
+        assertThrows(InternalServerErrorException.class, () -> walletApiService.deposit(testWallet.getId(), request));
 
         WalletEntity updatedWallet = walletRepository.findById(testWallet.getId()).orElseThrow();
         assertThat(updatedWallet.getBalance()).isEqualByComparingTo(BigDecimal.valueOf(100));
