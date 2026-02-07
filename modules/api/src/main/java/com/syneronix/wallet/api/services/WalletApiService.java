@@ -204,6 +204,9 @@ public class WalletApiService {
         } catch (CurrencyMismatchException e) {
             idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 400);
             throw e;
+        } catch (TransactionFailedException e) {
+            idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 422);
+            throw e;
         } catch (WalletLockedException e) {
             idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 423);
             throw e;
@@ -211,9 +214,6 @@ public class WalletApiService {
             idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 429);
             throw e;
         } catch (PreviousRequestFailedException e) {
-            throw e;
-        } catch (TransactionFailedException e) {
-            idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 422);
             throw e;
         } catch (RequestTamperingException e) {
             log.error("Attempt to spoof a request with id {}", request.getRequestId());

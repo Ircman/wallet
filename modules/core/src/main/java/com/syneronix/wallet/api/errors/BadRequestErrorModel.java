@@ -29,9 +29,11 @@ public class BadRequestErrorModel {
     @Getter
     @AllArgsConstructor
     public static class ValidationError {
-        @Schema(description = "The name of the field where the error occurred", example = "registration_number")
+
+        @Schema(description = "The name of the field where the error occurred", example = "request_id")
         private String field;
-        @Schema(description = "Error Description", example = "number must contain only digits")
+
+        @Schema(description = "Error Description", example = "field is missing")
         private String errorMessage;
     }
 }

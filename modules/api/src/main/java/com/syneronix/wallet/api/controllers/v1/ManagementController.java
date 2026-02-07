@@ -1,8 +1,11 @@
 package com.syneronix.wallet.api.controllers.v1;
 
+
 import com.syneronix.wallet.api.dto.management.BlacklistResponse;
 import com.syneronix.wallet.api.dto.management.BlockWalletRequest;
 import com.syneronix.wallet.api.dto.management.UnblockWalletResponse;
+import com.syneronix.wallet.api.errors.BadRequestErrorModel;
+import com.syneronix.wallet.api.errors.ErrorExamples;
 import com.syneronix.wallet.api.errors.ErrorResponse;
 import com.syneronix.wallet.api.services.ManagementApiService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,10 +37,11 @@ public class ManagementController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Wallet blocked successfully",
                             content = @Content(schema = @Schema(implementation = BlacklistResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestErrorModel.class))),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
                     @ApiResponse(responseCode = "409", description = "Wallet already blocked", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @PostMapping(value = "/blacklist", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BlacklistResponse> blockWallet(@Valid @RequestBody BlockWalletRequest request) {
@@ -51,8 +55,10 @@ public class ManagementController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Wallet unblocked successfully",
                             content = @Content(schema = @Schema(implementation = UnblockWalletResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found or not blocked", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestErrorModel.class))),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found or not blocked", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @DeleteMapping("/blacklist/{walletId}")
     public ResponseEntity<UnblockWalletResponse> unblockWallet(@PathVariable UUID walletId) {
@@ -63,7 +69,7 @@ public class ManagementController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "List retrieved successfully",
                             content = @Content(schema = @Schema(implementation = BlacklistResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @GetMapping("/blacklist")
     public ResponseEntity<List<BlacklistResponse>> getBlacklist() {

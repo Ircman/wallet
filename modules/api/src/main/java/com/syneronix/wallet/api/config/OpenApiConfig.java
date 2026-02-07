@@ -2,13 +2,16 @@ package com.syneronix.wallet.api.config;
 
 
 
+
 import com.syneronix.wallet.api.errors.BadRequestErrorModel;
+import com.syneronix.wallet.api.errors.ErrorExamples;
 import com.syneronix.wallet.api.errors.ErrorResponse;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.models.*;
+import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
@@ -75,6 +78,8 @@ public class OpenApiConfig {
                                         ))
                                 )
                         )
+                        .addExamples("CurrencyMismatch", new Example().value(ErrorExamples.CURRENCY_MISMATCH_JSON))
+                        .addExamples("ValidationError", new Example().value(ErrorExamples.VALIDATION_ERROR_JSON))
                 );
     }
 

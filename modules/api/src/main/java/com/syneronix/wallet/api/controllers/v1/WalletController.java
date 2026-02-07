@@ -1,12 +1,16 @@
 package com.syneronix.wallet.api.controllers.v1;
 
+
 import com.syneronix.wallet.api.dto.wallet.*;
+import com.syneronix.wallet.api.errors.BadRequestErrorModel;
+import com.syneronix.wallet.api.errors.ErrorExamples;
 import com.syneronix.wallet.api.errors.ErrorResponse;
 import com.syneronix.wallet.api.services.WalletApiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,9 +39,9 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Wallet created successfully",
                             content = @Content(schema = @Schema(implementation = WalletResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "Wallet already exists or conflict", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = BadRequestErrorModel.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<WalletResponse> createWallet(@Valid @RequestBody CreateWalletRequest request) {
@@ -60,8 +64,8 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Wallet found",
                             content = @Content(schema = @Schema(implementation = WalletResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @GetMapping("/{id}")
     public ResponseEntity<WalletResponse> getWallet(@PathVariable UUID id) {
@@ -76,11 +80,20 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Deposit successful",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters (e.g. currency mismatch)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (e.g. transaction failed)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(oneOf = {ErrorResponse.class, BadRequestErrorModel.class}),
+                                    examples = {
+                                            @ExampleObject(name = "Validation Error", ref = "#/components/examples/ValidationError"),
+                                            @ExampleObject(name = "Currency Mismatch", ref = "#/components/examples/CurrencyMismatch")
+                                    }
+                            )),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorExamples.TransactionFailed.class))),
+                    @ApiResponse(responseCode = "423", description = "Wallet locked (SUSPENDED)", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletLocked.class))),
+                    @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content(schema = @Schema(implementation = ErrorExamples.RateLimitExceeded.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @PostMapping(value = "/{id}/deposit", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponse> deposit(@PathVariable UUID id, @Valid @RequestBody DepositRequest request) {
@@ -95,11 +108,20 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Withdrawal successful",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (e.g. insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(oneOf = {ErrorResponse.class, BadRequestErrorModel.class}),
+                                    examples = {
+                                            @ExampleObject(name = "Validation Error", ref = "#/components/examples/ValidationError"),
+                                            @ExampleObject(name = "Currency Mismatch", ref = "#/components/examples/CurrencyMismatch")
+                                    }
+                            )),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorExamples.TransactionFailed.class))),
+                    @ApiResponse(responseCode = "423", description = "Wallet locked (SUSPENDED)", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletLocked.class))),
+                    @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content(schema = @Schema(implementation = ErrorExamples.RateLimitExceeded.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @PostMapping(value = "/{id}/withdraw", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponse> withdraw(@PathVariable UUID id, @Valid @RequestBody WithdrawRequest request) {
@@ -110,11 +132,20 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transfer successful",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input parameters (e.g., same wallet)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "One or both wallets not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "409", description = "Conflict (e.g., duplicate request ID)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (e.g. insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(oneOf = {ErrorResponse.class, BadRequestErrorModel.class}),
+                                    examples = {
+                                            @ExampleObject(name = "Validation Error", ref = "#/components/examples/ValidationError"),
+                                            @ExampleObject(name = "Currency Mismatch", ref = "#/components/examples/CurrencyMismatch")
+                                    }
+                            )),
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity (insufficient funds)", content = @Content(schema = @Schema(implementation = ErrorExamples.TransactionFailed.class))),
+                    @ApiResponse(responseCode = "423", description = "Wallet locked (SUSPENDED)", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletLocked.class))),
+                    @ApiResponse(responseCode = "429", description = "Too Many Requests", content = @Content(schema = @Schema(implementation = ErrorExamples.RateLimitExceeded.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @PostMapping(value = "/transfer", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TransactionResponse> transfer(@Valid @RequestBody TransferRequest request) {
@@ -129,8 +160,8 @@ public class WalletController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Transactions retrieved successfully",
                             content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
-                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+                    @ApiResponse(responseCode = "404", description = "Wallet not found", content = @Content(schema = @Schema(implementation = ErrorExamples.WalletNotFound.class))),
+                    @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorExamples.InternalServerError.class)))
             })
     @GetMapping("/{id}/transactions")
     public ResponseEntity<List<TransactionResponse>> getTransactions(@PathVariable UUID id) {
