@@ -24,6 +24,11 @@ spotless {
     }
 }
 
+// Automatically apply spotless formatting before compilation
+tasks.withType(JavaCompile).configureEach {
+    dependsOn 'spotlessApply'
+}
+
 dependencies {
     implementation libs.commons
 

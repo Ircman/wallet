@@ -40,7 +40,7 @@ public class TransactionService {
 
         wallet.setBalance(wallet.getBalance().add(amount));
         walletRepository.save(wallet);
-        
+
         ledgerService.createLedgerEntry(transaction, MoneyFlowDirection.CREDIT,  wallet, amount, wallet.getBalance());
 
         transaction.setStatus(TransactionStatus.COMPLETED);
@@ -94,7 +94,7 @@ public class TransactionService {
         // Update balances
         fromWallet.setBalance(fromWallet.getBalance().subtract(amount));
         toWallet.setBalance(toWallet.getBalance().add(amount));
-        
+
         walletRepository.save(fromWallet);
         walletRepository.save(toWallet);
 

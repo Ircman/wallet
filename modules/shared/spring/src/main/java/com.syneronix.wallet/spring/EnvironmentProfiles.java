@@ -1,9 +1,8 @@
 package com.syneronix.wallet.spring;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import lombok.NoArgsConstructor;
-import lombok.experimental.UtilityClass;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public class EnvironmentProfiles {

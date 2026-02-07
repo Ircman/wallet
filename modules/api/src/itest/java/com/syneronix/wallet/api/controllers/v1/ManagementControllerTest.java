@@ -3,10 +3,7 @@ package com.syneronix.wallet.api.controllers.v1;
 import com.syneronix.wallet.api.dto.management.BlockWalletRequest;
 import com.syneronix.wallet.common.Currency;
 import com.syneronix.wallet.common.WalletStatus;
-import com.syneronix.wallet.domain.BlacklistEntity;
-import com.syneronix.wallet.domain.BlacklistRepository;
-import com.syneronix.wallet.domain.WalletEntity;
-import com.syneronix.wallet.domain.WalletRepository;
+import com.syneronix.wallet.domain.*;
 import com.syneronix.wallet.testing.BaseMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,10 +28,22 @@ class ManagementControllerTest extends BaseMockMvcTest {
     @Autowired
     private BlacklistRepository blacklistRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private LedgerEntryRepository ledgerEntryRepository;
+
+    @Autowired
+    private IdempotencyKeyRepository idempotencyKeyRepository;
+
     private WalletEntity testWallet;
 
     @BeforeEach
     void setUp() {
+        idempotencyKeyRepository.deleteAll();
+        ledgerEntryRepository.deleteAll();
+        transactionRepository.deleteAll();
         blacklistRepository.deleteAll();
         walletRepository.deleteAll();
         testWallet = createWallet();

@@ -71,7 +71,7 @@ public class IdempotencyApiService {
                     return responseType.cast(wr);
                 }
                 throw new IllegalStateException("Response type mismatch for CREATE_WALLET. Expected WalletResponse, got " + responseType.getName());
-                
+
             case DEPOSIT:
                 if (responseType.isAssignableFrom(TransactionResponse.class)) {
                     TransactionResponse tr = walletMapper.toTransactionResponse((DepositRequest) request);
