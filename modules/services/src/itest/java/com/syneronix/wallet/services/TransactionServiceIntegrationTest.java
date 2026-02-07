@@ -115,10 +115,8 @@ class TransactionServiceIntegrationTest extends BaseIntegrationTest {
                 transactionService.deposit(requestId, testWallet, amount, Currency.USD)
         );
 
-        // Verify Ledger Rollback
         assertThat(ledgerEntryRepository.count()).isEqualTo(0);
 
-        // Verify Wallet Balance Rollback
         WalletEntity updatedWallet = walletRepository.findById(testWallet.getId()).orElseThrow();
         assertThat(updatedWallet.getBalance()).isEqualByComparingTo(BigDecimal.valueOf(100));
     }

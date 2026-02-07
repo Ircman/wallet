@@ -19,8 +19,12 @@ class LedgerServiceIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void createLedgerEntry_shouldThrowException_whenNoTransaction() {
-        assertThrows(IllegalTransactionStateException.class, () -> {
-            ledgerService.createLedgerEntry(new TransactionEntity(), MoneyFlowDirection.CREDIT, new WalletEntity(), BigDecimal.TEN, BigDecimal.TEN);
-        });
+        assertThrows(IllegalTransactionStateException.class, () ->
+                ledgerService.createLedgerEntry(
+                        new TransactionEntity(),
+                        MoneyFlowDirection.CREDIT,
+                        new WalletEntity(),
+                        BigDecimal.TEN,
+                        BigDecimal.TEN));
     }
 }
