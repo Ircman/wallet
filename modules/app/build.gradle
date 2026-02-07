@@ -6,8 +6,6 @@ dependencies {
     api libs.springBootWeb
     implementation libs.openApi
 
-    itestImplementation libs.restAssured
-
     implementation project(':modules:api')
     implementation project(':modules:services')
     implementation project(':modules:core')

@@ -75,9 +75,6 @@ ext {
             springTest                      : [
                     "org.springframework.boot:spring-boot-starter-test"
             ],
-            restAssured                     : [
-                    "io.rest-assured:rest-assured:${restAssuredVersion}"
-            ],
             openApi                         : [
                     "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springDocOpenApi}"
             ],

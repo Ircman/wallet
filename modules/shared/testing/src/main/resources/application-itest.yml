@@ -52,7 +52,6 @@ spring:
         use_sql_comments: false
         format_sql: true
         naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-        default_schema: syneronix
         types.jackson.object.mapper: com.syneronix.wallet.spring.CustomObjectMapperSupplier
         integration:
           envers:
@@ -64,3 +63,7 @@ syneronix:
   flyway:
     locations: classpath:db/migration
     flyway-environment: ${environment:local}
+  policy:
+    rate-limit:
+      max-transactions: 5
+      window-minutes: 1

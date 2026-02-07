@@ -28,10 +28,6 @@ public class BaseMockMvcTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    protected static String uuidString() {
-        return UUID.randomUUID().toString();
-    }
-
     protected static UUID uuid() {
         return UUID.randomUUID();
     }

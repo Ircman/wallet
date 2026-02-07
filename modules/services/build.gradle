@@ -12,4 +12,5 @@ dependencies {
 
 
     itestImplementation project(":modules:shared:testing")
+    testImplementation project(":modules:shared:testing")
 }

@@ -6,7 +6,6 @@ dependencies {
 
     implementation libs.hibernate
     implementation libs.jackson
-    implementation libs.restAssured
     implementation libs.junit5
     implementation libs.springTest
 }

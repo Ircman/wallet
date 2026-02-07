@@ -57,10 +57,6 @@ public class WalletApiService {
     }
 
     public TransactionResponse deposit(UUID walletId, @Valid DepositRequest request) {
-        if (walletService.findByWalletIdReadOnly(walletId).isEmpty()) {
-            throw new WalletNotFoundException(walletId);
-        }
-
         return proccessRequest(
                 request,
                 RequestType.DEPOSIT,
@@ -87,9 +83,6 @@ public class WalletApiService {
 
     public TransactionResponse withdraw(UUID walletId, @Valid WithdrawRequest request) {
         log.info("Processing withdraw request. RequestID: {}", request.getRequestId());
-        if (walletService.findByWalletIdReadOnly(walletId).isEmpty()) {
-            throw new WalletNotFoundException(walletId);
-        }
 
         return proccessRequest(
                 request,
@@ -201,7 +194,10 @@ public class WalletApiService {
             idempotencyApiService.success(request.getRequestId(), response, successStatus);
             return response;
 
-        } catch (CurrencyMismatchException e) {
+        } catch (WalletNotFoundException e) {
+            idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 404);
+            throw e;
+        } catch (BadRequestException e) {
             idempotencyApiService.rejected(request.getRequestId(), request, e.getMessage(), 400);
             throw e;
         } catch (TransactionFailedException e) {

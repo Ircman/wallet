@@ -19,9 +19,8 @@ import java.util.UUID;
 @Slf4j
 @ActiveProfiles(resolver = ItestActiveProfilesResolver.class)
 public abstract class BaseIntegrationTest extends Assertions {
-
-    protected static String uuid() {
-        return UUID.randomUUID().toString();
+    protected static UUID uuid() {
+        return UUID.randomUUID();
     }
 
     protected static LocalDateTime now() {
