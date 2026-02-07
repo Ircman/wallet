@@ -21,10 +21,6 @@ public class BadRequestErrorModel {
         this.validationError = validationError;
     }
 
-    public BadRequestErrorModel() {
-        description = "One or more validation errors occurred";
-        this.validationError = null;
-    }
 
     @Getter
     @AllArgsConstructor

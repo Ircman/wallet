@@ -3,8 +3,6 @@ package com.syneronix.wallet.api.errors;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.experimental.UtilityClass;
 
-import java.util.List;
-
 @UtilityClass
 public class ErrorExamples {
 
@@ -54,76 +52,6 @@ public class ErrorExamples {
     }
 
     @Schema(
-            name = "InsufficientFundsResponse",
-            description = "Example of 409 error",
-            example = INSUFFICIENT_FUNDS_JSON
-    )
-    public static class InsufficientFunds extends ErrorResponse {
-        public InsufficientFunds() {
-            super("CONFLICT", 409, "Insufficient funds", "/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11/withdraw");
-        }
-
-        @Override
-        @Schema(example = "CONFLICT")
-        public String getCode() {
-            return super.getCode();
-        }
-
-        @Override
-        @Schema(example = "409")
-        public int getErrorCode() {
-            return super.getErrorCode();
-        }
-
-        @Override
-        @Schema(example = "Insufficient funds")
-        public String getMessage() {
-            return super.getMessage();
-        }
-
-        @Override
-        @Schema(example = "/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11/withdraw")
-        public String getPath() {
-            return super.getPath();
-        }
-    }
-
-    @Schema(
-            name = "CurrencyMismatchResponse",
-            description = "Example of 400 error",
-            example = CURRENCY_MISMATCH_JSON
-    )
-    public static class CurrencyMismatch extends ErrorResponse {
-        public CurrencyMismatch() {
-            super("BAD_REQUEST", 400, "Currency mismatch: Wallet is USD but request is EUR", "/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11/deposit");
-        }
-
-        @Override
-        @Schema(example = "BAD_REQUEST")
-        public String getCode() {
-            return super.getCode();
-        }
-
-        @Override
-        @Schema(example = "400")
-        public int getErrorCode() {
-            return super.getErrorCode();
-        }
-
-        @Override
-        @Schema(example = "Currency mismatch: Wallet is USD but request is EUR")
-        public String getMessage() {
-            return super.getMessage();
-        }
-
-        @Override
-        @Schema(example = "/api/v1/wallets/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11/deposit")
-        public String getPath() {
-            return super.getPath();
-        }
-    }
-
-    @Schema(
             name = "TransactionFailedResponse",
             description = "Example of 422 error",
             example = TRANSACTION_FAILED_JSON
@@ -158,34 +86,6 @@ public class ErrorExamples {
         }
     }
 
-    @Schema(
-            name = "ValidationErrorResponse",
-            description = "Example of 400 validation error",
-            example = VALIDATION_ERROR_JSON
-    )
-    public static class ValidationErrorExample extends BadRequestErrorModel {
-        public ValidationErrorExample() {
-            super("One or more validation errors occurred", List.of(new ValidationError("amount", "must be greater than 0")));
-        }
-
-        @Override
-        @Schema(example = "BAD_REQUEST")
-        public String getCode() {
-            return super.getCode();
-        }
-
-        @Override
-        @Schema(example = "One or more validation errors occurred")
-        public String getDescription() {
-            return super.getDescription();
-        }
-
-        @Override
-        @Schema(description = "List of validation errors")
-        public List<ValidationError> getValidationError() {
-            return super.getValidationError();
-        }
-    }
 
     @Schema(
             name = "InternalServerErrorResponse",
@@ -222,40 +122,6 @@ public class ErrorExamples {
         }
     }
 
-    @Schema(
-            name = "RequestTamperingResponse",
-            description = "Example of 400 error (Tampering)",
-            example = REQUEST_TAMPERING_JSON
-    )
-    public static class RequestTampering extends ErrorResponse {
-        public RequestTampering() {
-            super("BAD_REQUEST", 400, "Invalid request", "/api/v1/wallets/...");
-        }
-
-        @Override
-        @Schema(example = "BAD_REQUEST")
-        public String getCode() {
-            return super.getCode();
-        }
-
-        @Override
-        @Schema(example = "400")
-        public int getErrorCode() {
-            return super.getErrorCode();
-        }
-
-        @Override
-        @Schema(example = "Invalid request")
-        public String getMessage() {
-            return super.getMessage();
-        }
-
-        @Override
-        @Schema(example = "/api/v1/wallets/...")
-        public String getPath() {
-            return super.getPath();
-        }
-    }
 
     @Schema(
             name = "WalletLockedResponse",
