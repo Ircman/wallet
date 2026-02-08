@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.UUID;
-
 @Tag("integration")
 @SpringBootTest(
         classes = IntegrationApplication.class,
@@ -16,8 +14,5 @@ import java.util.UUID;
 )
 @Slf4j
 @ActiveProfiles(resolver = ItestActiveProfilesResolver.class)
-public abstract class BaseIntegrationTest extends Assertions {
-    protected static UUID uuid() {
-        return UUID.randomUUID();
-    }
+public abstract class BaseIntegrationTest extends Assertions implements TestHelpers {
 }

@@ -8,4 +8,6 @@ dependencies {
     implementation libs.jackson
     implementation libs.junit5
     implementation libs.springTest
+    implementation libs.testcontainers
+    implementation libs.h2 // Needed for BaseH2RepositoryTest
 }

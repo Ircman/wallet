@@ -64,6 +64,7 @@ ext {
             junit5_engine                   : [
                     "org.junit.jupiter:junit-jupiter-engine"
             ],
+            junit4: "junit:junit:4.13.2",
             test_tools                      : [
                     "org.mockito:mockito-junit-jupiter"
             ],
@@ -92,7 +93,7 @@ ext {
 allprojects {
     configurations.configureEach {
         exclude group: 'org.junit.vintage'
-        exclude group: 'junit'
+        // exclude group: 'junit'
         exclude group: 'javax'
         exclude group: 'commons-fileupload'
     }

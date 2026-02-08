@@ -51,7 +51,7 @@ dependencies {
 
 
 configurations.all {
-    exclude group: 'junit'
+    // exclude group: 'junit' // Removed to allow Testcontainers to compile
     exclude group: 'org.junit.vintage'
 }
 

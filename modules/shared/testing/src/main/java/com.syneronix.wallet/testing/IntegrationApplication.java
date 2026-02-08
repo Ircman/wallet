@@ -6,9 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import static org.springframework.data.repository.config.BootstrapMode.LAZY;
 
-@EntityScan("com.syneronix.wallet.*")
-@EnableJpaRepositories(basePackages = "com.syneronix.wallet.*", bootstrapMode = LAZY)
+@EntityScan("com.syneronix.wallet")
+@EnableJpaRepositories(basePackages = "com.syneronix.wallet", bootstrapMode = LAZY)
 @SpringBootApplication(scanBasePackages = "com.syneronix.wallet")
 public class IntegrationApplication {
-
 }
