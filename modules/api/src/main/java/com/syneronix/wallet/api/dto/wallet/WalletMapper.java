@@ -24,6 +24,8 @@ public interface WalletMapper {
     WalletResponse toWalletCreateResponse(WalletEntity entity, CreateWalletRequest request);
 
 
+    @Mapping(target = "fromWalletId", source = "fromWallet.id")
+    @Mapping(target = "toWalletId", source = "toWallet.id")
     TransactionResponse toTransactionResponse(TransactionEntity entity);
 
     TransactionResponse toTransactionResponse(DepositRequest request);
